@@ -176,9 +176,12 @@ func (svc *ServiceEvent) handleEdsResponse(rsp *service_discovery_v3.DiscoveryRe
 		loadAssignment = &config_endpoint_v3.ClusterLoadAssignment{}
 	)
 
-	edsClusterNames := make([]string, o, len(rsp.GetResources()))
+	edsClusterNames := make([]string, 0, len(rsp.GetResources()))
 	for _, resource := range rsp.GetResources() {
 		if err = anypb.UnmarshalTo(resource, loadAssignment, proto.UnmarshalOptions{}); err != nil {
+			continue
+		}
+		if len(loadAssignment.Endpoints) == 0 {
 			continue
 		}
 		edsClusterNames = append(edsClusterNames, loadAssignment.GetClusterName())
