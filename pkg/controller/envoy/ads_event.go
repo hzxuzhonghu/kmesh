@@ -27,6 +27,7 @@ import (
 	resource_v3 "github.com/envoyproxy/go-control-plane/pkg/resource/v3"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/anypb"
+	"istio.io/istio/pkg/slices"
 	"k8s.io/apimachinery/pkg/util/sets"
 
 	admin_v2 "kmesh.net/kmesh/api/v2/admin"
@@ -98,6 +99,7 @@ func (svc *ServiceEvent) processAdsResponse(rsp *service_discovery_v3.DiscoveryR
 
 	log.Debugf("handle ads response, %#v\n", rsp.GetTypeUrl())
 
+	// TODO: move ack request in each handler, so we won't miss resource names
 	svc.ack = newAckRequest(rsp)
 	if rsp.GetResources() == nil {
 		return
@@ -128,11 +130,15 @@ func (svc *ServiceEvent) handleCdsResponse(rsp *service_discovery_v3.DiscoveryRe
 	)
 
 	current := sets.New[string]()
+	var edsClusterNames []string
 	for _, resource := range rsp.GetResources() {
 		if err = anypb.UnmarshalTo(resource, cluster, proto.UnmarshalOptions{}); err != nil {
 			continue
 		}
 		current.Insert(cluster.GetName())
+		if cluster.GetType() == config_cluster_v3.Cluster_EDS {
+			edsClusterNames = append(edsClusterNames, cluster.GetName())
+		}
 		// compare part[0] CDS now
 		// Cluster_EDS need compare tow parts, compare part[1] EDS in EDS handler
 		apiStatus := core_v2.ApiStatus_UPDATE
@@ -151,13 +157,14 @@ func (svc *ServiceEvent) handleCdsResponse(rsp *service_discovery_v3.DiscoveryRe
 	for key := range removed {
 		svc.DynamicLoader.UpdateApiClusterStatus(key, core_v2.ApiStatus_DELETE)
 	}
-
 	// TODO: maybe we don't need to wait until all clusters ready before loading, like cluster delete
 
-	if len(svc.DynamicLoader.clusterNames) > 0 {
-		svc.rqt = newAdsRequest(resource_v3.EndpointType, svc.DynamicLoader.clusterNames)
-		svc.DynamicLoader.clusterNames = nil
-	} else {
+	// When the list of eds typed clusters subscribed changed, we should resubscribe to new eds.
+	if !slices.EqualUnordered(svc.DynamicLoader.lastEdsClusterNames, edsClusterNames) {
+		svc.rqt = newAdsRequest(resource_v3.EndpointType, edsClusterNames)
+		svc.DynamicLoader.lastEdsClusterNames = edsClusterNames
+	}
+	if len(edsClusterNames) == 0 {
 		svc.DynamicLoader.ClusterCache.Flush()
 	}
 	return nil
@@ -169,10 +176,12 @@ func (svc *ServiceEvent) handleEdsResponse(rsp *service_discovery_v3.DiscoveryRe
 		loadAssignment = &config_endpoint_v3.ClusterLoadAssignment{}
 	)
 
+	edsClusterNames := make([]string, o, len(rsp.GetResources()))
 	for _, resource := range rsp.GetResources() {
 		if err = anypb.UnmarshalTo(resource, loadAssignment, proto.UnmarshalOptions{}); err != nil {
 			continue
 		}
+		edsClusterNames = append(edsClusterNames, loadAssignment.GetClusterName())
 		apiStatus := svc.DynamicLoader.ClusterCache.GetApiCluster(loadAssignment.GetClusterName()).ApiStatus
 		newHash := hash.Sum64String(resource.String())
 		// part[0] CDS is different or part[1] EDS is different
@@ -184,7 +193,8 @@ func (svc *ServiceEvent) handleEdsResponse(rsp *service_discovery_v3.DiscoveryRe
 			svc.DynamicLoader.CreateApiClusterByEds(apiStatus, loadAssignment)
 		}
 	}
-
+	// If we donot set resource names on ack for eds or rds, it will cause unsubscribe all previous subscribed resources.
+	svc.ack.ResourceNames = edsClusterNames
 	svc.rqt = newAdsRequest(resource_v3.ListenerType, nil)
 	svc.DynamicLoader.ClusterCache.Flush()
 	return nil

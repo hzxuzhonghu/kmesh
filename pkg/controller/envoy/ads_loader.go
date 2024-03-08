@@ -41,7 +41,7 @@ import (
 
 type AdsLoader struct {
 	// subscribe to EDS by cluster Name
-	clusterNames []string
+	lastEdsClusterNames []string
 	// subscribe to RDS by RouteConfiguration Name
 	routeNames []string
 
@@ -67,9 +67,7 @@ func (load *AdsLoader) CreateApiClusterByCds(status core_v2.ApiStatus, cluster *
 		CircuitBreakers: newApiCircuitBreakers(cluster.GetCircuitBreakers()),
 	}
 
-	if cluster.GetType() == config_cluster_v3.Cluster_EDS {
-		load.clusterNames = append(load.clusterNames, cluster.GetName())
-	} else {
+	if cluster.GetType() != config_cluster_v3.Cluster_EDS {
 		apiCluster.LoadAssignment = newApiClusterLoadAssignment(cluster.GetLoadAssignment())
 	}
 
