@@ -21,14 +21,13 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"kmesh.net/kmesh/api/v2/workloadapi"
 	"kmesh.net/kmesh/pkg/nets"
 )
 
 func TestAddWorkload(t *testing.T) {
 	t.Run("adding a workload when none exists", func(t *testing.T) {
 		w := newWorkloadStore()
-		workload := &workloadapi.Workload{
+		workload := &workload.Workload{
 			Name:    "ut-workload",
 			Uid:     "123456",
 			Network: "ut-net",
@@ -47,7 +46,7 @@ func TestAddWorkload(t *testing.T) {
 
 	t.Run("modify addresses in workload", func(t *testing.T) {
 		w := newWorkloadStore()
-		workload := &workloadapi.Workload{
+		workload := &workload.Workload{
 			Name:    "ut-workload",
 			Uid:     "123456",
 			Network: "ut-net",
@@ -62,7 +61,7 @@ func TestAddWorkload(t *testing.T) {
 		addr2 := nets.ConvertIpByteToUint32([]byte("1.2.3.4"))
 		assert.Equal(t, workload, w.byAddr[NetworkAddress{Network: workload.Network, Address: addr1}])
 		assert.Equal(t, workload, w.byAddr[NetworkAddress{Network: workload.Network, Address: addr2}])
-		newWorkload := &workloadapi.Workload{
+		newWorkload := &workload.Workload{
 			Name:    "ut-workload",
 			Uid:     "123456",
 			Network: "new-net",
@@ -77,13 +76,13 @@ func TestAddWorkload(t *testing.T) {
 		addr4 := nets.ConvertIpByteToUint32([]byte("2.3.4.5"))
 		assert.Equal(t, newWorkload, w.byAddr[NetworkAddress{Network: newWorkload.Network, Address: addr3}])
 		assert.Equal(t, newWorkload, w.byAddr[NetworkAddress{Network: newWorkload.Network, Address: addr4}])
-		assert.Equal(t, (*workloadapi.Workload)(nil), w.byAddr[NetworkAddress{Network: workload.Network, Address: addr1}])
-		assert.Equal(t, (*workloadapi.Workload)(nil), w.byAddr[NetworkAddress{Network: workload.Network, Address: addr2}])
+		assert.Equal(t, (*workload.Workload)(nil), w.byAddr[NetworkAddress{Network: workload.Network, Address: addr1}])
+		assert.Equal(t, (*workload.Workload)(nil), w.byAddr[NetworkAddress{Network: workload.Network, Address: addr2}])
 	})
 
 	t.Run("add addresses to the same workload", func(t *testing.T) {
 		w := newWorkloadStore()
-		workload := &workloadapi.Workload{
+		workload := &workload.Workload{
 			Name:    "ut-workload",
 			Uid:     "123456",
 			Network: "ut-net",
@@ -95,7 +94,7 @@ func TestAddWorkload(t *testing.T) {
 		assert.Equal(t, workload, w.byUid["123456"])
 		addr := nets.ConvertIpByteToUint32([]byte("192.168.224.22"))
 		assert.Equal(t, workload, w.byAddr[NetworkAddress{Network: workload.Network, Address: addr}])
-		newWorkload := &workloadapi.Workload{
+		newWorkload := &workload.Workload{
 			Name:    "ut-workload",
 			Uid:     "123456",
 			Network: "new-net",
@@ -110,14 +109,14 @@ func TestAddWorkload(t *testing.T) {
 		addr2 := nets.ConvertIpByteToUint32([]byte("2.3.4.5"))
 		assert.Equal(t, newWorkload, w.byAddr[NetworkAddress{Network: newWorkload.Network, Address: addr1}])
 		assert.Equal(t, newWorkload, w.byAddr[NetworkAddress{Network: newWorkload.Network, Address: addr2}])
-		assert.Equal(t, (*workloadapi.Workload)(nil), w.byAddr[NetworkAddress{Network: workload.Network, Address: addr}])
+		assert.Equal(t, (*workload.Workload)(nil), w.byAddr[NetworkAddress{Network: workload.Network, Address: addr}])
 	})
 }
 
 func TestDeleteWorkload(t *testing.T) {
 	t.Run("normal function test", func(t *testing.T) {
 		w := newWorkloadStore()
-		workload := &workloadapi.Workload{
+		workload := &workload.Workload{
 			Name:    "ut-workload",
 			Uid:     "123456",
 			Network: "ut-net",
@@ -129,10 +128,10 @@ func TestDeleteWorkload(t *testing.T) {
 		w.AddWorkload(workload)
 		assert.Equal(t, workload, w.byUid["123456"])
 		w.DeleteWorkload("123456")
-		assert.Equal(t, (*workloadapi.Workload)(nil), w.byUid["123456"])
+		assert.Equal(t, (*workload.Workload)(nil), w.byUid["123456"])
 		addr1 := nets.ConvertIpByteToUint32([]byte("hello"))
 		addr2 := nets.ConvertIpByteToUint32([]byte("world"))
-		assert.Equal(t, (*workloadapi.Workload)(nil), w.byAddr[NetworkAddress{Network: "ut-net", Address: addr1}])
-		assert.Equal(t, (*workloadapi.Workload)(nil), w.byAddr[NetworkAddress{Network: "ut-net", Address: addr2}])
+		assert.Equal(t, (*workload.Workload)(nil), w.byAddr[NetworkAddress{Network: "ut-net", Address: addr1}])
+		assert.Equal(t, (*workload.Workload)(nil), w.byAddr[NetworkAddress{Network: "ut-net", Address: addr2}])
 	})
 }

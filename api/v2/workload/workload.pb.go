@@ -18,7 +18,7 @@
 // 	protoc        v3.17.3
 // source: api/workloadapi/workload.proto
 
-package workloadapi
+package workload
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"

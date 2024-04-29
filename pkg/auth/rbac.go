@@ -26,7 +26,6 @@ import (
 
 	"github.com/cilium/ebpf/ringbuf"
 
-	"kmesh.net/kmesh/api/v2/workloadapi"
 	"kmesh.net/kmesh/api/v2/workloadapi/security"
 	"kmesh.net/kmesh/pkg/bpf"
 	"kmesh.net/kmesh/pkg/controller/common/cache"
@@ -152,7 +151,7 @@ func (r *Rbac) RemovePolicy(policyKey string) {
 }
 
 func (r *Rbac) doRbac(conn *rbacConnection) bool {
-	var workload *workloadapi.Workload
+	var workload *workload.Workload
 	if len(conn.srcIp) > 0 {
 		workload = cache.WorkloadCache.GetWorkloadByAddr(cache.NetworkAddress{
 			Network: conn.srcNetwork,
@@ -184,7 +183,7 @@ func (r *Rbac) doRbac(conn *rbacConnection) bool {
 	return false
 }
 
-func (r *Rbac) aggregate(workload *workloadapi.Workload) (allowPolicies, denyPolicies []authPolicy) {
+func (r *Rbac) aggregate(workload *workload.Workload) (allowPolicies, denyPolicies []authPolicy) {
 	allowPolicies = make([]authPolicy, 0)
 	denyPolicies = make([]authPolicy, 0)
 
