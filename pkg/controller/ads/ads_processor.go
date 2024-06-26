@@ -153,8 +153,7 @@ func (p *processor) handleCdsResponse(resp *service_discovery_v3.DiscoveryRespon
 			p.Cache.edsClusterNames = append(p.Cache.edsClusterNames, cluster.GetName())
 		} else if cluster.GetType() == config_cluster_v3.Cluster_STRICT_DNS ||
 			cluster.GetType() == config_cluster_v3.Cluster_LOGICAL_DNS {
-			clonedCluster := proto.Clone(cluster).(*config_cluster_v3.Cluster)
-			dnsClusters = append(dnsClusters, clonedCluster)
+			dnsClusters = append(dnsClusters, cluster)
 		}
 		// compare part[0] CDS now
 		// Cluster_EDS need compare tow parts, compare part[1] EDS in EDS handler
@@ -166,7 +165,7 @@ func (p *processor) handleCdsResponse(resp *service_discovery_v3.DiscoveryRespon
 			} else if cluster.GetType() == config_cluster_v3.Cluster_STRICT_DNS ||
 				cluster.GetType() == config_cluster_v3.Cluster_LOGICAL_DNS {
 				// dns typed cluster will be handled in dns module, skip update bpf map here
-				status = core_v2.ApiStatus_NONE
+				status = core_v2.ApiStatus_WAITING
 			} else {
 				status = core_v2.ApiStatus_UPDATE
 			}
@@ -179,7 +178,7 @@ func (p *processor) handleCdsResponse(resp *service_discovery_v3.DiscoveryRespon
 			log.Debugf("unchanged cluster %s", cluster.GetName())
 		}
 	}
-	// send domain and refreshrate map to dns resolver via channel
+	// send dns clusters to dns resolver
 	p.DnsResolverChan <- dnsClusters
 	removed := p.Cache.ClusterCache.GetResourceNames().Difference(current)
 	for key := range removed {
