@@ -27,12 +27,10 @@ spec:
   selector:
     matchLabels:
       app: httpbin
-      version: v1
   template:
     metadata:
       labels:
         app: httpbin
-        version: v1
     spec:
       serviceAccountName: httpbin
       containers:
