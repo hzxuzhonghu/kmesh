@@ -85,7 +85,7 @@ jobs:
         echo 'If you are using a "manual" build mode for one or more of the' \
           'languages you are analyzing, replace this with the commands to build' \
           'your code, for example:'
-        ./build.sh
+        sudo bash ./build.sh
         exit 1
 
     - name: Perform CodeQL Analysis
