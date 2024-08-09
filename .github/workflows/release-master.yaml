@@ -20,14 +20,11 @@ jobs:
         run: |
           platform=${{ matrix.platform }}
           echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV          
-      - name: Checkout Code
-        uses: actions/checkout@v3
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY_IMAGE }}
-      
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       
@@ -36,7 +33,10 @@ jobs:
       
       - name: Login to Github Container Registry
         run: echo "${{ secrets.GH_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
-      
+        
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
       - name: Build and push by digest
         id: build
         uses: docker/build-push-action@v6
