@@ -5,7 +5,7 @@ on:
     branches:
       - "main"
 env:
-  REGISTRY_IMAGE: hzxuzhonghu/kmesh
+  REGISTRY_IMAGE: ghcr.io/hzxuzhonghu/kmesh
 jobs:
   build:
     runs-on: ubuntu-latest
