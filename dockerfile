@@ -1,7 +1,7 @@
 FROM ghcr.io/kmesh-net/kmesh-build:latest AS builder 
 Copy . /kmesh
 WORKDIR /kmesh
-RUN ./build.sh && ./build.sh -i
+RUN git config --global --add safe.directory /kmesh && ./build.sh && ./build.sh -i
 
 FROM openeuler/openeuler:23.09
 WORKDIR /kmesh
