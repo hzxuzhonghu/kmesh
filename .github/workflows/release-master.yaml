@@ -24,7 +24,12 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY_IMAGE }}
+          images: ${{ env.REGISTRY_IMAGE }}    
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=ref,event=tag
+            type=semver,pattern={{version}}
+            type=raw,value=latest,enable={{is_default_branch}} 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       
@@ -45,6 +50,7 @@ jobs:
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
           file: dockerfile
+          tags: ${{ steps.meta.outputs.tags }}
           outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
      
       - name: Export digest
