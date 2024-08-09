@@ -33,14 +33,12 @@ jobs:
       
       - name: Login to Github Container Registry
         run: echo "${{ secrets.GH_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
-        
-      - name: Checkout Code
-        uses: actions/checkout@v3
 
       - name: Build and push by digest
         id: build
         uses: docker/build-push-action@v6
         with:
+          context: .
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
           file: dockerfile
