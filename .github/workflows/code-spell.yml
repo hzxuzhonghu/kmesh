@@ -36,7 +36,7 @@ jobs:
 
           # The point in the directory tree to start spell checking.
           # Default: .
-          root: '.'
+          root: './'
 
           # Notification level to use with inline reporting of spelling errors.
           # Allowed values are: warning, error, none
@@ -58,8 +58,6 @@ jobs:
           # Limit the files checked to the ones in the pull request or push.
           incremental_files_only: false
 
-          # Path to `cspell.json`
-          config: '.'
 
           # Log progress and other information during the action execution.
           # Default: false
