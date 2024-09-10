@@ -1,4 +1,4 @@
-name: Build and Push Image
+name: Build and Push Kmesh-build Image
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     tags:
       - "v*.*.*"
 env:
-  REGISTRY_IMAGE: ghcr.io/hzxuzhonghu/kmesh
+  REGISTRY_IMAGE: ghcr.io/hzxuzhonghu/kmesh-build
 jobs:
   build:
     runs-on: ubuntu-22.04
@@ -43,10 +43,6 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v3
-      
-      - name: Build 
-        run: |
-          ./kmesh_compile.sh
 
       - name: Push by digest
         id: build
@@ -55,7 +51,7 @@ jobs:
           context: .
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
-          file: build/docker/dockerfile
+          file: build/docker/builder.dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           outputs: type=image,name=${{ env.REGISTRY_IMAGE }},name-canonical=true,push=true
 
@@ -106,7 +102,7 @@ jobs:
         working-directory: /tmp/digests
         run: |
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)          
+            $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
 
       - name: Inspect image
         run: |
