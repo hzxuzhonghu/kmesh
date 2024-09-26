@@ -33,6 +33,6 @@ jobs:
           sed -i "s/tag: .*/tag: $VERSION/" deploy/charts/kmesh-helm/values.yaml
       - name: Build and Push the Helm Charts to GitHub Container Registry
         uses: JimCronqvist/action-helm-chart-repo@master
-        chart-path: deploy/charts/kmesh-helm
         with:
           token: ${{ secrets.GH_TOKEN }}
+          chartsPath: deploy/charts/kmesh-helm
