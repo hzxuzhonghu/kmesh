@@ -28,4 +28,4 @@ jobs:
           sed -i "s/tag: .*/tag: $VERSION/" deploy/charts/kmesh-helm/values.yaml
       - name: Build and Push the Helm Charts to GitHub Container Registry
         run: |
-          make helm-push CHART_VERSION=$VERSION
+          make helm-push VERSION=$VERSION CHART_VERSION=$VERSION HUB=ghcr.io/hzxuzhonghu
