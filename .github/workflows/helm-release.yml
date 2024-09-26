@@ -1,0 +1,38 @@
+name: Build and Push Kmesh-build Image
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+jobs:
+  helm:
+    permissions:
+      contents: read
+      packages: write
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: '3.12.3'
+          token: ${{ secrets.GH_TOKEN }}
+
+      - name: Set Version
+        id: set_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Update Chart.yaml
+        run: |
+          sed -i "s/version: .*/version: $VERSION/" deploy/charts/kmesh-helm/Chart.yaml
+          sed -i "s/appVersion: .*/appVersion: $VERSION/" deploy/charts/kmesh-helm/Chart.yaml
+      - name: Update Image Tag
+        run: |
+          sed -i "s/tag: .*/tag: $VERSION/" deploy/charts/kmesh-helm/values.yaml
+      - name: Build and Push the Helm Charts to GitHub Container Registry
+        uses: JimCronqvist/action-helm-chart-repo@master
+        with:
+          chart-path: deploy/charts/kmesh-helm
+          token: ${{ secrets.GH_TOKEN }}
