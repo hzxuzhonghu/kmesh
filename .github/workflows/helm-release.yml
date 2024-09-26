@@ -18,14 +18,14 @@ jobs:
         uses: azure/setup-helm@v3
         with:
           version: '3.12.3'
-          token: ${{ secrets.GH_TOKEN }}
-
       - name: Set Version
         id: set_version
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
       - name: Update Image Tag
         run: |
           sed -i "s/tag: .*/tag: $VERSION/" deploy/charts/kmesh-helm/values.yaml
+      - name: Login to Github Container Registry
+        run: echo "${{ secrets.GH_TOKEN }}" | docker login ghcr.io -u $ --password-stdin    
       - name: Build and Push the Helm Charts to GitHub Container Registry
         run: |
           make helm-push VERSION=$VERSION CHART_VERSION=$VERSION HUB=ghcr.io/hzxuzhonghu
