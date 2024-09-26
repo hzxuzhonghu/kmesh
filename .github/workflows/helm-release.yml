@@ -1,4 +1,4 @@
-name: Build and Push Kmesh-build Image
+name: Release Helm Chart
 
 on:
   push:
@@ -33,6 +33,6 @@ jobs:
           sed -i "s/tag: .*/tag: $VERSION/" deploy/charts/kmesh-helm/values.yaml
       - name: Build and Push the Helm Charts to GitHub Container Registry
         uses: JimCronqvist/action-helm-chart-repo@master
+        chart-path: deploy/charts/kmesh-helm
         with:
-          chart-path: deploy/charts/kmesh-helm
           token: ${{ secrets.GH_TOKEN }}
