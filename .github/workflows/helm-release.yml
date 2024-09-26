@@ -23,16 +23,9 @@ jobs:
       - name: Set Version
         id: set_version
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-
-      - name: Update Chart.yaml
-        run: |
-          sed -i "s/version: .*/version: $VERSION/" deploy/charts/kmesh-helm/Chart.yaml
-          sed -i "s/appVersion: .*/appVersion: $VERSION/" deploy/charts/kmesh-helm/Chart.yaml
       - name: Update Image Tag
         run: |
           sed -i "s/tag: .*/tag: $VERSION/" deploy/charts/kmesh-helm/values.yaml
       - name: Build and Push the Helm Charts to GitHub Container Registry
-        uses: JimCronqvist/action-helm-chart-repo@master
-        with:
-          token: ${{ secrets.GH_TOKEN }}
-          chartsPath: deploy/charts/kmesh-helm
+        run: |
+          make helm-push CHART_VERSION=$VERSION
