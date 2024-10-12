@@ -47,6 +47,9 @@ jobs:
       - name: Build 
         run: |
           ./kmesh_compile.sh
+          file ./out/kmesh-daemon
+          uname -a
+
 
       - name: Push by digest
         id: build
