@@ -325,7 +325,6 @@ func (p *Processor) addWorkloadToService(sk *bpf.ServiceKey, sv *bpf.ServiceValu
 
 // handleWorkloadUnboundServices handles when a workload's belonging services removed
 func (p *Processor) handleWorkloadUnboundServices(workload *workloadapi.Workload, unboundedEndpointKeys []bpf.EndpointKey) error {
-	// workloadUid := p.hashName.Hash(workload.Uid)
 	log.Debugf("handleWorkloadUnboundServices %s: %v", workload.ResourceName(), unboundedEndpointKeys)
 	err := p.deleteEndpointRecords(unboundedEndpointKeys)
 	if err != nil {
@@ -425,7 +424,8 @@ func (p *Processor) handleWorkload(workload *workloadapi.Workload) error {
 	p.storeWorkloadPolicies(workload.GetUid(), workload.GetAuthorizationPolicies())
 
 	// update kmesh localityCache
-	if p.locality.LocalityInfo == nil && p.nodeName == workload.GetNode() { // todo
+	// TODO: recalculate endpoints priority once local locality is set
+	if p.locality.LocalityInfo == nil && p.nodeName == workload.GetNode() {
 		p.locality.SetLocality(p.nodeName, workload.GetClusterId(), workload.GetNetwork(), workload.GetLocality())
 	}
 
