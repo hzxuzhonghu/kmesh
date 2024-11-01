@@ -75,14 +75,6 @@ type Server struct {
 	bpfLogLevelMap *ebpf.Map
 }
 
-func GetConfigDumpAddr(mode string) string {
-	return "http://" + adminAddr + configDumpPrefix + "/" + mode
-}
-
-func GetLoggerURL() string {
-	return "http://" + adminAddr + patternLoggers
-}
-
 func NewServer(c *controller.XdsClient, configs *options.BootstrapConfigs, bpfLogLevel *ebpf.Map) *Server {
 	s := &Server{
 		config:         configs,
