@@ -308,7 +308,7 @@ func BenchmarkAddNewServicesWithWorkload(b *testing.B) {
 	cleanup, bpfLoader := test.InitBpfMap(t, config)
 	b.Cleanup(cleanup)
 
-	workloadController := NewController(bpfLoader.GetBpfWorkload(), false)
+	workloadController := NewController(bpfLoader.GetBpfWorkload(), false, false)
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
