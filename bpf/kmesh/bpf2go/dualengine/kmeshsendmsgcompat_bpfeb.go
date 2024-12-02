@@ -80,8 +80,8 @@ type KmeshSendmsgCompatProgramSpecs struct {
 //
 // It can be passed ebpf.CollectionSpec.Assign.
 type KmeshSendmsgCompatMapSpecs struct {
+	KmLog          *ebpf.MapSpec `ebpf:"km_log"`
 	KmeshConfigMap *ebpf.MapSpec `ebpf:"kmesh_config_map"`
-	KmeshEvents    *ebpf.MapSpec `ebpf:"kmesh_events"`
 	MapOfDstInfo   *ebpf.MapSpec `ebpf:"map_of_dst_info"`
 	TmpBuf         *ebpf.MapSpec `ebpf:"tmp_buf"`
 }
@@ -105,16 +105,16 @@ func (o *KmeshSendmsgCompatObjects) Close() error {
 //
 // It can be passed to LoadKmeshSendmsgCompatObjects or ebpf.CollectionSpec.LoadAndAssign.
 type KmeshSendmsgCompatMaps struct {
+	KmLog          *ebpf.Map `ebpf:"km_log"`
 	KmeshConfigMap *ebpf.Map `ebpf:"kmesh_config_map"`
-	KmeshEvents    *ebpf.Map `ebpf:"kmesh_events"`
 	MapOfDstInfo   *ebpf.Map `ebpf:"map_of_dst_info"`
 	TmpBuf         *ebpf.Map `ebpf:"tmp_buf"`
 }
 
 func (m *KmeshSendmsgCompatMaps) Close() error {
 	return _KmeshSendmsgCompatClose(
+		m.KmLog,
 		m.KmeshConfigMap,
-		m.KmeshEvents,
 		m.MapOfDstInfo,
 		m.TmpBuf,
 	)

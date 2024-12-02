@@ -107,10 +107,10 @@ type KmeshCgroupSockWorkloadProgramSpecs struct {
 //
 // It can be passed ebpf.CollectionSpec.Assign.
 type KmeshCgroupSockWorkloadMapSpecs struct {
+	KmLog             *ebpf.MapSpec `ebpf:"km_log"`
 	KmeshBackend      *ebpf.MapSpec `ebpf:"kmesh_backend"`
 	KmeshConfigMap    *ebpf.MapSpec `ebpf:"kmesh_config_map"`
 	KmeshEndpoint     *ebpf.MapSpec `ebpf:"kmesh_endpoint"`
-	KmeshEvents       *ebpf.MapSpec `ebpf:"kmesh_events"`
 	KmeshFrontend     *ebpf.MapSpec `ebpf:"kmesh_frontend"`
 	KmeshManage       *ebpf.MapSpec `ebpf:"kmesh_manage"`
 	KmeshMap1600      *ebpf.MapSpec `ebpf:"kmesh_map1600"`
@@ -150,10 +150,10 @@ func (o *KmeshCgroupSockWorkloadObjects) Close() error {
 //
 // It can be passed to LoadKmeshCgroupSockWorkloadObjects or ebpf.CollectionSpec.LoadAndAssign.
 type KmeshCgroupSockWorkloadMaps struct {
+	KmLog             *ebpf.Map `ebpf:"km_log"`
 	KmeshBackend      *ebpf.Map `ebpf:"kmesh_backend"`
 	KmeshConfigMap    *ebpf.Map `ebpf:"kmesh_config_map"`
 	KmeshEndpoint     *ebpf.Map `ebpf:"kmesh_endpoint"`
-	KmeshEvents       *ebpf.Map `ebpf:"kmesh_events"`
 	KmeshFrontend     *ebpf.Map `ebpf:"kmesh_frontend"`
 	KmeshManage       *ebpf.Map `ebpf:"kmesh_manage"`
 	KmeshMap1600      *ebpf.Map `ebpf:"kmesh_map1600"`
@@ -176,10 +176,10 @@ type KmeshCgroupSockWorkloadMaps struct {
 
 func (m *KmeshCgroupSockWorkloadMaps) Close() error {
 	return _KmeshCgroupSockWorkloadClose(
+		m.KmLog,
 		m.KmeshBackend,
 		m.KmeshConfigMap,
 		m.KmeshEndpoint,
-		m.KmeshEvents,
 		m.KmeshFrontend,
 		m.KmeshManage,
 		m.KmeshMap1600,

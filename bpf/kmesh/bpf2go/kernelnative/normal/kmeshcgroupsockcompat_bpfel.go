@@ -104,10 +104,10 @@ type KmeshCgroupSockCompatProgramSpecs struct {
 //
 // It can be passed ebpf.CollectionSpec.Assign.
 type KmeshCgroupSockCompatMapSpecs struct {
+	KmLog               *ebpf.MapSpec `ebpf:"km_log"`
 	KmeshCluster        *ebpf.MapSpec `ebpf:"kmesh_cluster"`
 	KmeshClusterStats   *ebpf.MapSpec `ebpf:"kmesh_cluster_stats"`
 	KmeshConfigMap      *ebpf.MapSpec `ebpf:"kmesh_config_map"`
-	KmeshEvents         *ebpf.MapSpec `ebpf:"kmesh_events"`
 	KmeshListener       *ebpf.MapSpec `ebpf:"kmesh_listener"`
 	KmeshManage         *ebpf.MapSpec `ebpf:"kmesh_manage"`
 	KmeshMap1600        *ebpf.MapSpec `ebpf:"kmesh_map1600"`
@@ -144,10 +144,10 @@ func (o *KmeshCgroupSockCompatObjects) Close() error {
 //
 // It can be passed to LoadKmeshCgroupSockCompatObjects or ebpf.CollectionSpec.LoadAndAssign.
 type KmeshCgroupSockCompatMaps struct {
+	KmLog               *ebpf.Map `ebpf:"km_log"`
 	KmeshCluster        *ebpf.Map `ebpf:"kmesh_cluster"`
 	KmeshClusterStats   *ebpf.Map `ebpf:"kmesh_cluster_stats"`
 	KmeshConfigMap      *ebpf.Map `ebpf:"kmesh_config_map"`
-	KmeshEvents         *ebpf.Map `ebpf:"kmesh_events"`
 	KmeshListener       *ebpf.Map `ebpf:"kmesh_listener"`
 	KmeshManage         *ebpf.Map `ebpf:"kmesh_manage"`
 	KmeshMap1600        *ebpf.Map `ebpf:"kmesh_map1600"`
@@ -167,10 +167,10 @@ type KmeshCgroupSockCompatMaps struct {
 
 func (m *KmeshCgroupSockCompatMaps) Close() error {
 	return _KmeshCgroupSockCompatClose(
+		m.KmLog,
 		m.KmeshCluster,
 		m.KmeshClusterStats,
 		m.KmeshConfigMap,
-		m.KmeshEvents,
 		m.KmeshListener,
 		m.KmeshManage,
 		m.KmeshMap1600,
