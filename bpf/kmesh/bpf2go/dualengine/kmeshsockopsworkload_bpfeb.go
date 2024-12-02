@@ -32,12 +32,6 @@ type KmeshSockopsWorkloadKmeshConfig struct {
 	EnableMonitoring uint32
 }
 
-type KmeshSockopsWorkloadLogEvent struct {
-	Ret uint32
-	Msg [255]int8
-	_   [1]byte
-}
-
 type KmeshSockopsWorkloadManagerKey struct {
 	NetnsCookie uint64
 	_           [8]byte
@@ -133,7 +127,6 @@ type KmeshSockopsWorkloadMapSpecs struct {
 	MapOfTuple       *ebpf.MapSpec `ebpf:"map_of_tuple"`
 	MapOfWlPolicy    *ebpf.MapSpec `ebpf:"map_of_wl_policy"`
 	TmpBuf           *ebpf.MapSpec `ebpf:"tmp_buf"`
-	TmpLogBuf        *ebpf.MapSpec `ebpf:"tmp_log_buf"`
 }
 
 // KmeshSockopsWorkloadObjects contains all objects after they have been loaded into the kernel.
@@ -176,7 +169,6 @@ type KmeshSockopsWorkloadMaps struct {
 	MapOfTuple       *ebpf.Map `ebpf:"map_of_tuple"`
 	MapOfWlPolicy    *ebpf.Map `ebpf:"map_of_wl_policy"`
 	TmpBuf           *ebpf.Map `ebpf:"tmp_buf"`
-	TmpLogBuf        *ebpf.Map `ebpf:"tmp_log_buf"`
 }
 
 func (m *KmeshSockopsWorkloadMaps) Close() error {
@@ -202,7 +194,6 @@ func (m *KmeshSockopsWorkloadMaps) Close() error {
 		m.MapOfTuple,
 		m.MapOfWlPolicy,
 		m.TmpBuf,
-		m.TmpLogBuf,
 	)
 }
 

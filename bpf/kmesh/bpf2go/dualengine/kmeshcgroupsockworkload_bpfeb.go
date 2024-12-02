@@ -32,12 +32,6 @@ type KmeshCgroupSockWorkloadKmeshConfig struct {
 	EnableMonitoring uint32
 }
 
-type KmeshCgroupSockWorkloadLogEvent struct {
-	Ret uint32
-	Msg [255]int8
-	_   [1]byte
-}
-
 type KmeshCgroupSockWorkloadManagerKey struct {
 	NetnsCookie uint64
 	_           [8]byte
@@ -134,7 +128,6 @@ type KmeshCgroupSockWorkloadMapSpecs struct {
 	MapOfTuple        *ebpf.MapSpec `ebpf:"map_of_tuple"`
 	MapOfWlPolicy     *ebpf.MapSpec `ebpf:"map_of_wl_policy"`
 	TmpBuf            *ebpf.MapSpec `ebpf:"tmp_buf"`
-	TmpLogBuf         *ebpf.MapSpec `ebpf:"tmp_log_buf"`
 	XdpTailcallMap    *ebpf.MapSpec `ebpf:"xdp_tailcall_map"`
 }
 
@@ -178,7 +171,6 @@ type KmeshCgroupSockWorkloadMaps struct {
 	MapOfTuple        *ebpf.Map `ebpf:"map_of_tuple"`
 	MapOfWlPolicy     *ebpf.Map `ebpf:"map_of_wl_policy"`
 	TmpBuf            *ebpf.Map `ebpf:"tmp_buf"`
-	TmpLogBuf         *ebpf.Map `ebpf:"tmp_log_buf"`
 	XdpTailcallMap    *ebpf.Map `ebpf:"xdp_tailcall_map"`
 }
 
@@ -205,7 +197,6 @@ func (m *KmeshCgroupSockWorkloadMaps) Close() error {
 		m.MapOfTuple,
 		m.MapOfWlPolicy,
 		m.TmpBuf,
-		m.TmpLogBuf,
 		m.XdpTailcallMap,
 	)
 }

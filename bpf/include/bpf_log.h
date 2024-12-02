@@ -35,13 +35,6 @@ struct {
     __uint(max_entries, 256 * 1024 /* 256 KB */);
 } kmesh_events SEC(".maps");
 
-struct {
-    __uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-    __uint(max_entries, 1);
-    __type(key, int);
-    __type(value, struct log_event);
-} tmp_log_buf SEC(".maps");
-
 /* Add this macro to get ip addr from ctx variable, include bpf_sock_addr or bpf_sock_ops, weird
 reason is that would not be print ipaddr, when directly pass `&ctx->remote_ipv4` to bpf_trace_printk, maybe ctx pass in
 to printk would be changed*/

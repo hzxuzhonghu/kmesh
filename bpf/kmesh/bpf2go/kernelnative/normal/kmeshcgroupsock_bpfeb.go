@@ -24,12 +24,6 @@ type KmeshCgroupSockKmeshConfig struct {
 	EnableMonitoring uint32
 }
 
-type KmeshCgroupSockLogEvent struct {
-	Ret uint32
-	Msg [255]int8
-	_   [1]byte
-}
-
 type KmeshCgroupSockManagerKey struct {
 	NetnsCookie uint64
 	_           [8]byte
@@ -129,7 +123,6 @@ type KmeshCgroupSockMapSpecs struct {
 	MapOfSockStorage    *ebpf.MapSpec `ebpf:"map_of_sock_storage"`
 	OuterOfMaglev       *ebpf.MapSpec `ebpf:"outer_of_maglev"`
 	TmpBuf              *ebpf.MapSpec `ebpf:"tmp_buf"`
-	TmpLogBuf           *ebpf.MapSpec `ebpf:"tmp_log_buf"`
 }
 
 // KmeshCgroupSockObjects contains all objects after they have been loaded into the kernel.
@@ -170,7 +163,6 @@ type KmeshCgroupSockMaps struct {
 	MapOfSockStorage    *ebpf.Map `ebpf:"map_of_sock_storage"`
 	OuterOfMaglev       *ebpf.Map `ebpf:"outer_of_maglev"`
 	TmpBuf              *ebpf.Map `ebpf:"tmp_buf"`
-	TmpLogBuf           *ebpf.Map `ebpf:"tmp_log_buf"`
 }
 
 func (m *KmeshCgroupSockMaps) Close() error {
@@ -194,7 +186,6 @@ func (m *KmeshCgroupSockMaps) Close() error {
 		m.MapOfSockStorage,
 		m.OuterOfMaglev,
 		m.TmpBuf,
-		m.TmpLogBuf,
 	)
 }
 
